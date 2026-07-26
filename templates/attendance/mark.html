@@ -6,14 +6,27 @@
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold m-0 text-dark">Mark Attendance</h3>
-        <p class="text-muted m-0">Record attendance status for today</p>
-    </div>
-    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-6 fw-medium">
-        <i class="bi bi-calendar-check me-1"></i> Date: {{ today_date.strftime('%B %d, %Y') }}
+        <p class="text-muted m-0">Select date and record attendance status for students</p>
     </div>
 </div>
 
 <form action="{{ url_for('attendance.mark_attendance') }}" method="POST">
+    <!-- Date Selection Header Card -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body p-3 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-calendar-event text-primary fs-4"></i>
+                <label for="attendance_date" class="form-label fw-bold m-0 text-dark">Attendance Date:</label>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <input type="date" id="attendance_date" name="attendance_date" class="form-control fw-semibold" value="{{ target_date.strftime('%Y-%m-%d') }}" onchange="window.location.href='{{ url_for('attendance.mark_attendance') }}?date=' + this.value;">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-6 fw-medium text-nowrap">
+                    {{ target_date.strftime('%B %d, %Y') }}
+                </span>
+            </div>
+        </div>
+    </div>
+
     <div class="card border-0 shadow-sm rounded-3">
         <div class="table-responsive">
             <table class="table table-hover table-custom align-middle m-0">
@@ -28,7 +41,7 @@
                 <tbody>
                     {% if students %}
                         {% for student in students %}
-                            {% set current_status = today_records.get(student.id, 'Present') %}
+                            {% set current_status = target_records.get(student.id, 'Present') %}
                             <tr>
                                 <td><span class="badge bg-light text-dark border">{{ student.roll_number }}</span></td>
                                 <td class="fw-semibold">{{ student.name }}</td>
@@ -49,6 +62,7 @@
                             </tr>
                         {% endfor %}
                     {% else %}
+
                         <tr>
                             <td colspan="4" class="text-center py-4 text-muted">
                                 No students registered yet. Please add students first before marking attendance.

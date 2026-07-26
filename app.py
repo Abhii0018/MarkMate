@@ -1,9 +1,11 @@
 from flask import Flask
+from datetime import date, datetime
 from config import Config
 from models import db
 from models.admin import Admin
 from models.student import Student
 from models.attendance import Attendance
+
 from routes.auth import auth_bp
 from routes.dashboard import dashboard_bp
 from routes.students import students_bp
@@ -32,16 +34,47 @@ def create_app():
             default_admin.set_password('admin123')
             db.session.add(default_admin)
             
-            # Seed sample students if empty
-            if Student.query.count() == 0:
-                s1 = Student(roll_number='CS101', name='Rahul Sharma', department='Computer Science', semester='Semester 6')
-                s2 = Student(roll_number='CS102', name='Priya Patel', department='Computer Science', semester='Semester 6')
-                s3 = Student(roll_number='IT101', name='Amit Kumar', department='Information Technology', semester='Semester 4')
-                s4 = Student(roll_number='EC101', name='Sneha Gupta', department='Electronics', semester='Semester 4')
-                s5 = Student(roll_number='ME101', name='Vikram Singh', department='Mechanical', semester='Semester 2')
-                db.session.add_all([s1, s2, s3, s4, s5])
-                
+        # Seed expanded sample students if empty or less than 10
+        if Student.query.count() < 10:
+            Student.query.delete()
             db.session.commit()
+            
+            sample_students = [
+                Student(roll_number='CS101', name='Rahul Sharma', department='Computer Science', semester='Semester 6'),
+                Student(roll_number='CS102', name='Priya Patel', department='Computer Science', semester='Semester 6'),
+                Student(roll_number='CS103', name='Rohan Verma', department='Computer Science', semester='Semester 6'),
+                Student(roll_number='IT101', name='Amit Kumar', department='Information Technology', semester='Semester 4'),
+                Student(roll_number='IT102', name='Neha Singh', department='Information Technology', semester='Semester 4'),
+                Student(roll_number='EC101', name='Sneha Gupta', department='Electronics', semester='Semester 4'),
+                Student(roll_number='EC102', name='Ankit Yadav', department='Electronics', semester='Semester 4'),
+                Student(roll_number='ME101', name='Vikram Singh', department='Mechanical', semester='Semester 2'),
+                Student(roll_number='ME102', name='Karan Malhotra', department='Mechanical', semester='Semester 2'),
+                Student(roll_number='CE101', name='Pooja Roy', department='Civil', semester='Semester 4'),
+                Student(roll_number='CE102', name='Deepak Mishra', department='Civil', semester='Semester 4'),
+                Student(roll_number='EE101', name='Siddharth Rao', department='Electrical', semester='Semester 6'),
+                Student(roll_number='EE102', name='Divya Joshi', department='Electrical', semester='Semester 6'),
+                Student(roll_number='CS104', name='Aarav Mehta', department='Computer Science', semester='Semester 2'),
+                Student(roll_number='IT103', name='Isha Nair', department='Information Technology', semester='Semester 2')
+            ]
+            db.session.add_all(sample_students)
+            db.session.commit()
+
+            # Seed historical attendance records for past dates & today
+            from datetime import timedelta
+            today = date.today()
+            past_dates = [today - timedelta(days=2), today - timedelta(days=1), today]
+            
+            all_students = Student.query.all()
+            for d in past_dates:
+                for idx, student in enumerate(all_students):
+                    # Create realistic attendance pattern
+                    status = 'Absent' if (idx + d.day) % 4 == 0 else 'Present'
+                    existing = Attendance.query.filter_by(student_id=student.id, attendance_date=d).first()
+                    if not existing:
+                        db.session.add(Attendance(student_id=student.id, attendance_date=d, status=status))
+            
+            db.session.commit()
+
 
 
 

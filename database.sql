@@ -1,5 +1,5 @@
 -- =================================================
--- MarkMate Database Creation Script
+-- MarkMate Expanded Database Script
 -- Database: attendance_db
 -- =================================================
 
@@ -42,20 +42,26 @@ CREATE TABLE IF NOT EXISTS `attendance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- -------------------------------------------------
--- Seed Initial Data
--- Default Admin: admin / admin123
--- Password hash generated using Werkzeug scrypt/pbkdf2
+-- Seed Admin & Students
 -- -------------------------------------------------
-
 INSERT INTO `admins` (`username`, `password`) VALUES
 ('admin', 'scrypt:32768:8:1$uH3jJ2fO9XyqL2vE$e7b51f0436d44558bc1a43a8ce7c3b2cb1e360f796d8ddb5bfcf5ec0005db37911b369fb04c6ff2bd44b02ba14ce42d76feccecb547796d8e82ef6ff7e868a2d')
 ON DUPLICATE KEY UPDATE `username`=`username`;
 
--- Sample Students
 INSERT INTO `students` (`roll_number`, `name`, `department`, `semester`) VALUES
 ('CS101', 'Rahul Sharma', 'Computer Science', 'Semester 6'),
 ('CS102', 'Priya Patel', 'Computer Science', 'Semester 6'),
+('CS103', 'Rohan Verma', 'Computer Science', 'Semester 6'),
 ('IT101', 'Amit Kumar', 'Information Technology', 'Semester 4'),
+('IT102', 'Neha Singh', 'Information Technology', 'Semester 4'),
 ('EC101', 'Sneha Gupta', 'Electronics', 'Semester 4'),
-('ME101', 'Vikram Singh', 'Mechanical', 'Semester 2')
+('EC102', 'Ankit Yadav', 'Electronics', 'Semester 4'),
+('ME101', 'Vikram Singh', 'Mechanical', 'Semester 2'),
+('ME102', 'Karan Malhotra', 'Mechanical', 'Semester 2'),
+('CE101', 'Pooja Roy', 'Civil', 'Semester 4'),
+('CE102', 'Deepak Mishra', 'Civil', 'Semester 4'),
+('EE101', 'Siddharth Rao', 'Electrical', 'Semester 6'),
+('EE102', 'Divya Joshi', 'Electrical', 'Semester 6'),
+('CS104', 'Aarav Mehta', 'Computer Science', 'Semester 2'),
+('IT103', 'Isha Nair', 'Information Technology', 'Semester 2')
 ON DUPLICATE KEY UPDATE `roll_number`=`roll_number`;

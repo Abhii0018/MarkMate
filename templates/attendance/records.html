@@ -8,10 +8,16 @@
         <h3 class="fw-bold m-0 text-dark">Attendance Records</h3>
         <p class="text-muted m-0">Historical attendance logs and reports</p>
     </div>
-    <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary btn-rounded shadow-sm">
-        <i class="bi bi-pencil-square me-1"></i> Mark Today's Attendance
-    </a>
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('attendance.export_csv') }}" class="btn btn-outline-success btn-rounded shadow-sm">
+            <i class="bi bi-file-earmark-spreadsheet me-1"></i> Export to CSV
+        </a>
+        <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary btn-rounded shadow-sm">
+            <i class="bi bi-pencil-square me-1"></i> Mark Attendance
+        </a>
+    </div>
 </div>
+
 
 <!-- Search & Filter Card -->
 <div class="card border-0 shadow-sm mb-4">

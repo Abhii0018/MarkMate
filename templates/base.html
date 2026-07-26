@@ -16,8 +16,10 @@
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="brand-title d-flex align-items-center gap-2">
-            <i class="bi bi-check2-square text-primary fs-3"></i>
-            <span>MarkMate</span>
+            <a href="/" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                <i class="bi bi-check2-square text-primary fs-3"></i>
+                <span>MarkMate</span>
+            </a>
         </div>
         <div class="mt-3">
             <ul class="nav flex-column">
@@ -26,6 +28,7 @@
                         <i class="bi bi-grid-1x2-fill"></i> Dashboard
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ url_for('students.list_students') }}" class="nav-link {% if 'students' in request.endpoint %}active{% endif %}">
                         <i class="bi bi-people-fill"></i> Students

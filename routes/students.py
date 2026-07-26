@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import db
 from models.student import Student
+from models.attendance import Attendance
 from routes import login_required
 
 students_bp = Blueprint('students', __name__)
@@ -10,15 +11,28 @@ students_bp = Blueprint('students', __name__)
 def list_students():
     query = request.args.get('q', '').strip()
     if query:
-        # Search by Roll Number or Name
         students = Student.query.filter(
             (Student.roll_number.ilike(f"%{query}%")) | 
             (Student.name.ilike(f"%{query}%"))
         ).all()
     else:
-        students = Student.query.order_by(Student.id.desc()).all()
+        students = Student.query.order_by(Student.roll_number.asc()).all()
         
-    return render_template('students/list.html', students=students, query=query)
+    # Calculate attendance statistics for each student
+    student_stats = []
+    for s in students:
+        total = Attendance.query.filter_by(student_id=s.id).count()
+        present = Attendance.query.filter_by(student_id=s.id, status='Present').count()
+        percentage = round((present / total * 100), 1) if total > 0 else 0.0
+        student_stats.append({
+            'student': s,
+            'total': total,
+            'present': present,
+            'percentage': percentage
+        })
+
+    return render_template('students/list.html', student_stats=student_stats, query=query)
+
 
 @students_bp.route('/add', methods=['GET', 'POST'])
 @login_required
