@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Students - MarkMate{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold m-0 text-dark">Student Directory</h3>
+        <p class="text-muted m-0">View, search, edit, or delete enrolled students</p>
+    </div>
+    <a href="{{ url_for('students.add_student') }}" class="btn btn-primary btn-rounded shadow-sm">
+        <i class="bi bi-person-plus-fill me-1"></i> Add New Student
+    </a>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form action="{{ url_for('students.list_students') }}" method="GET" class="row g-2 align-items-center">
+            <div class="col-12 col-md-9">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Search by Roll Number or Student Name..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-12 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100 btn-rounded">Search</button>
+                {% if query %}
+                    <a href="{{ url_for('students.list_students') }}" class="btn btn-outline-secondary btn-rounded">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Student Responsive Bootstrap Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle m-0">
+            <thead>
+                <tr>
+                    <th>Roll Number</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if students %}
+                    {% for student in students %}
+                        <tr>
+                            <td><span class="badge bg-light text-dark border px-2 py-1">{{ student.roll_number }}</span></td>
+                            <td class="fw-semibold text-dark">{{ student.name }}</td>
+                            <td>{{ student.department }}</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary border px-2 py-1">{{ student.semester }}</span></td>
+                            <td class="text-center">
+                                <div class="btn-group gap-2" role="group">
+                                    <a href="{{ url_for('students.edit_student', id=student.id) }}" class="btn btn-sm btn-outline-primary rounded-2" title="Edit Student">
+                                        <i class="bi bi-pencil-fill"></i> Edit
+                                    </a>
+                                    <!-- Delete Modal Trigger Button -->
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-2" data-bs-toggle="modal" data-bs-target="#deleteModal{{ student.id }}" title="Delete Student">
+                                        <i class="bi bi-trash-fill"></i> Delete
+                                    </button>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal{{ student.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ student.id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content text-start">
+                                            <div class="modal-header border-0">
+                                                <h5 class="modal-title fw-bold text-danger" id="deleteModalLabel{{ student.id }}">
+                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Student Deletion
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body py-2">
+                                                Are you sure you want to delete student <strong>{{ student.name }}</strong> (Roll No: <code>{{ student.roll_number }}</code>)?
+                                                <br><small class="text-muted">This will also delete all associated attendance history.</small>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-light rounded-2" data-bs-dismiss="modal">Cancel</button>
+                                                <form action="{{ url_for('students.delete_student', id=student.id) }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger rounded-2">Delete Student</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No students found matching your criteria.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

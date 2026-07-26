@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Student - MarkMate{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('students.list_students') }}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Back to Student Directory
+    </a>
+    <h3 class="fw-bold m-0 text-dark mt-2">Edit Student Details</h3>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4">
+                <form action="{{ url_for('students.edit_student', id=student.id) }}" method="POST">
+                    <div class="mb-3">
+                        <label for="roll_number" class="form-label fw-semibold">Roll Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="roll_number" name="roll_number" value="{{ student.roll_number }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ student.name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="department" class="form-label fw-semibold">Department <span class="text-danger">*</span></label>
+                        <select class="form-select" id="department" name="department" required>
+                            {% for dept in ['Computer Science', 'Information Technology', 'Electronics', 'Mechanical', 'Civil', 'Electrical'] %}
+                                <option value="{{ dept }}" {% if student.department == dept %}selected{% endif %}>{{ dept }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="semester" class="form-label fw-semibold">Semester <span class="text-danger">*</span></label>
+                        <select class="form-select" id="semester" name="semester" required>
+                            {% for sem in ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8'] %}
+                                <option value="{{ sem }}" {% if student.semester == sem %}selected{% endif %}>{{ sem }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-rounded shadow-sm">
+                            <i class="bi bi-save me-1"></i> Update Student
+                        </button>
+                        <a href="{{ url_for('students.list_students') }}" class="btn btn-light btn-rounded">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

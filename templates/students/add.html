@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Add New Student - MarkMate{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('students.list_students') }}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Back to Student Directory
+    </a>
+    <h3 class="fw-bold m-0 text-dark mt-2">Add New Student</h3>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4">
+                <form action="{{ url_for('students.add_student') }}" method="POST">
+                    <div class="mb-3">
+                        <label for="roll_number" class="form-label fw-semibold">Roll Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="roll_number" name="roll_number" placeholder="e.g. CS101" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="department" class="form-label fw-semibold">Department <span class="text-danger">*</span></label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="" disabled selected>Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Electrical">Electrical</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="semester" class="form-label fw-semibold">Semester <span class="text-danger">*</span></label>
+                        <select class="form-select" id="semester" name="semester" required>
+                            <option value="" disabled selected>Select Semester</option>
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5">Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                            <option value="Semester 7">Semester 7</option>
+                            <option value="Semester 8">Semester 8</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-rounded shadow-sm">
+                            <i class="bi bi-check-circle me-1"></i> Save Student
+                        </button>
+                        <a href="{{ url_for('students.list_students') }}" class="btn btn-light btn-rounded">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

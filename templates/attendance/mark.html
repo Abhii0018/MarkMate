@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Mark Attendance - MarkMate{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold m-0 text-dark">Mark Attendance</h3>
+        <p class="text-muted m-0">Record attendance status for today</p>
+    </div>
+    <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-6 fw-medium">
+        <i class="bi bi-calendar-check me-1"></i> Date: {{ today_date.strftime('%B %d, %Y') }}
+    </div>
+</div>
+
+<form action="{{ url_for('attendance.mark_attendance') }}" method="POST">
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="table-responsive">
+            <table class="table table-hover table-custom align-middle m-0">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th class="text-center">Attendance Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if students %}
+                        {% for student in students %}
+                            {% set current_status = today_records.get(student.id, 'Present') %}
+                            <tr>
+                                <td><span class="badge bg-light text-dark border">{{ student.roll_number }}</span></td>
+                                <td class="fw-semibold">{{ student.name }}</td>
+                                <td>{{ student.department }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group" aria-label="Attendance radio toggle">
+                                        <input type="radio" class="btn-check" name="status_{{ student.id }}" id="present_{{ student.id }}" value="Present" autocomplete="off" {% if current_status == 'Present' %}checked{% endif %}>
+                                        <label class="btn btn-outline-success px-3 rounded-start-2" for="present_{{ student.id }}">
+                                            <i class="bi bi-check-circle me-1"></i> Present
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="status_{{ student.id }}" id="absent_{{ student.id }}" value="Absent" autocomplete="off" {% if current_status == 'Absent' %}checked{% endif %}>
+                                        <label class="btn btn-outline-danger px-3 rounded-end-2" for="absent_{{ student.id }}">
+                                            <i class="bi bi-x-circle me-1"></i> Absent
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                No students registered yet. Please add students first before marking attendance.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if students %}
+            <div class="card-footer bg-white border-0 py-3 text-end">
+                <button type="submit" class="btn btn-primary btn-rounded shadow-sm">
+                    <i class="bi bi-floppy-fill me-1"></i> Save Attendance
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

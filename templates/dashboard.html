@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - MarkMate{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold m-0 text-dark">Dashboard Overview</h3>
+        <p class="text-muted m-0">Daily attendance summary and metrics</p>
+    </div>
+    <div>
+        <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary btn-rounded shadow-sm">
+            <i class="bi bi-pencil-square me-1"></i> Mark Today's Attendance
+        </a>
+    </div>
+</div>
+
+<!-- Dashboard Metric Cards -->
+<div class="row g-3 mb-4">
+    <!-- Total Students -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Total Students</h6>
+                    <h2 class="fw-bold mb-0 text-dark">{{ total_students }}</h2>
+                </div>
+                <div class="icon-box bg-primary-subtle text-primary">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Present Today -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Present Today</h6>
+                    <h2 class="fw-bold mb-0 text-success">{{ present_today }}</h2>
+                </div>
+                <div class="icon-box bg-success-subtle text-success">
+                    <i class="bi bi-person-check-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Absent Today -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Absent Today</h6>
+                    <h2 class="fw-bold mb-0 text-danger">{{ absent_today }}</h2>
+                </div>
+                <div class="icon-box bg-danger-subtle text-danger">
+                    <i class="bi bi-person-x-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Date -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Today's Date</h6>
+                    <h5 class="fw-bold mb-0 text-secondary">{{ today_date }}</h5>
+                </div>
+                <div class="icon-box bg-info-subtle text-info">
+                    <i class="bi bi-calendar-event-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Attendance Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
+        <h5 class="fw-bold m-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Attendance (Last 5 Records)</h5>
+        <a href="{{ url_for('attendance.attendance_records') }}" class="btn btn-sm btn-outline-primary rounded-pill">View All Records</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-custom align-middle m-0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_attendance %}
+                    {% for record in recent_attendance %}
+                        <tr>
+                            <td class="fw-medium text-secondary">{{ record.attendance_date.strftime('%Y-%m-%d') }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ record.student.roll_number }}</span></td>
+                            <td class="fw-semibold">{{ record.student.name }}</td>
+                            <td>{{ record.student.department }}</td>
+                            <td>
+                                {% if record.status == 'Present' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Present
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Absent
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No attendance records found yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
