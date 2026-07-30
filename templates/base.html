@@ -62,6 +62,9 @@
             </button>
             <h5 class="m-0 text-secondary fw-semibold">Student Attendance Management</h5>
             <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('dashboard.download_ppt') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 fw-medium">
+                    <i class="bi bi-file-earmark-slides-fill me-1"></i> Download PPT
+                </a>
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-medium">
                     <i class="bi bi-person-circle"></i> Admin: {{ session.get('username', 'Admin') }}
                 </span>

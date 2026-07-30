@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, send_from_directory, current_app
 from datetime import date
+import os
 from models.student import Student
 from models.attendance import Attendance
 from routes import login_required
@@ -9,6 +10,12 @@ dashboard_bp = Blueprint('dashboard', __name__)
 @dashboard_bp.route('/')
 def landing():
     return render_template('landing.html')
+
+@dashboard_bp.route('/download-ppt')
+def download_ppt():
+    directory = current_app.root_path
+    filename = 'MarkMate_Project_Presentation.pptx'
+    return send_from_directory(directory, filename, as_attachment=True)
 
 @dashboard_bp.route('/dashboard')
 @login_required
