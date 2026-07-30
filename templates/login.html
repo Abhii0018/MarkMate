@@ -3,30 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - MarkMate</title>
+    <title>Login - MarkMate Attendance Portal</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .role-nav .nav-link {
+            border-radius: 10px;
+            color: #64748b;
+            font-weight: 600;
+            padding: 10px 16px;
+            transition: all 0.2s ease;
+        }
+        .role-nav .nav-link.active {
+            background-color: #3b82f6;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+    </style>
 </head>
-<body class="login-body">
+<body class="login-body d-flex align-items-center justify-content-center min-vh-100 py-5 bg-light">
 
-    <div class="card login-card p-4 p-md-5">
+    <div class="card login-card p-4 p-md-5 border-0 shadow-lg rounded-4" style="max-width: 480px; width: 100%;">
         <div class="text-center mb-4">
-            <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle mb-3" style="width: 60px; height: 60px;">
-                <i class="bi bi-shield-lock fs-2"></i>
-            </div>
-            <h3 class="fw-bold text-dark">MarkMate</h3>
-            <p class="text-muted small">Admin Attendance System Portal</p>
+            <a href="/" class="text-decoration-none">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-4 mb-2 shadow" style="width: 54px; height: 54px;">
+                    <i class="bi bi-check2-square fs-2"></i>
+                </div>
+                <h3 class="fw-bold text-dark m-0">MarkMate</h3>
+            </a>
+            <p class="text-muted small mt-1">Multi-Role Attendance Management Portal</p>
         </div>
+
+        <!-- Role Selector Tabs -->
+        <ul class="nav nav-pills nav-justified role-nav mb-4 bg-light p-1 rounded-3 border">
+            <li class="nav-item">
+                <button type="button" class="nav-link {% if active_tab == 'admin' or not active_tab %}active{% endif %}" id="tab-admin" onclick="switchRole('admin')">
+                    <i class="bi bi-shield-lock me-1"></i> Admin
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link {% if active_tab == 'teacher' %}active{% endif %}" id="tab-teacher" onclick="switchRole('teacher')">
+                    <i class="bi bi-person-badge me-1"></i> Teacher
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link {% if active_tab == 'student' %}active{% endif %}" id="tab-student" onclick="switchRole('student')">
+                    <i class="bi bi-mortarboard me-1"></i> Student
+                </button>
+            </li>
+        </ul>
 
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm small" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -34,30 +69,75 @@
             {% endif %}
         {% endwith %}
 
-        <form action="{{ url_for('auth.login') }}" method="POST">
+        <form action="{{ url_for('auth.login') }}" method="POST" id="loginForm">
+            <input type="hidden" name="role" id="selectedRole" value="{{ active_tab or 'admin' }}">
+
             <div class="mb-3">
-                <label for="username" class="form-label fw-semibold text-secondary">Username</label>
+                <label for="username" class="form-label fw-semibold text-secondary small" id="usernameLabel">Username</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted" id="userIcon"></i></span>
                     <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" placeholder="Enter username" required>
                 </div>
             </div>
 
             <div class="mb-4">
-                <label for="password" class="form-label fw-semibold text-secondary">Password</label>
+                <label for="password" class="form-label fw-semibold text-secondary small">Password</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-key text-muted"></i></span>
                     <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="Enter password" required>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 btn-rounded shadow-sm">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            <button type="submit" class="btn btn-primary w-100 py-2.5 btn-rounded shadow-sm fw-bold">
+                <i class="bi bi-box-arrow-in-right me-1"></i> <span id="submitBtnText">Sign In to Portal</span>
             </button>
         </form>
+
+        <!-- Quick Demo Credentials Hint -->
+        <div class="mt-4 pt-3 border-top text-center">
+            <div class="badge bg-light text-secondary border px-3 py-2 w-100 text-start" id="demoHint">
+                <div class="fw-bold mb-1"><i class="bi bi-info-circle-fill text-primary me-1"></i> Quick Demo Logins:</div>
+                <div id="demoText" class="font-monospace small">Admin: admin / admin123</div>
+            </div>
+        </div>
     </div>
 
     <!-- Bootstrap 5 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function switchRole(role) {
+            document.querySelectorAll('.role-nav .nav-link').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + role).classList.add('active');
+            document.getElementById('selectedRole').value = role;
+
+            const usernameInput = document.getElementById('username');
+            const usernameLabel = document.getElementById('usernameLabel');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const demoText = document.getElementById('demoText');
+
+            if (role === 'admin') {
+                usernameLabel.innerText = 'Admin Username';
+                usernameInput.placeholder = 'e.g. admin';
+                submitBtnText.innerText = 'Sign In as Admin';
+                demoText.innerHTML = '<strong>Admin:</strong> admin / admin123';
+            } else if (role === 'teacher') {
+                usernameLabel.innerText = 'Teacher Username';
+                usernameInput.placeholder = 'e.g. prof.sharma';
+                submitBtnText.innerText = 'Sign In as Teacher';
+                demoText.innerHTML = '<strong>CS Teacher:</strong> prof.sharma / teacher123<br><strong>ME Teacher:</strong> prof.verma / teacher123<br><strong>Civil Teacher:</strong> prof.gupta / teacher123';
+            } else if (role === 'student') {
+                usernameLabel.innerText = 'Student Roll Number';
+                usernameInput.placeholder = 'e.g. CS101 or CS103';
+                submitBtnText.innerText = 'Sign In as Student';
+                demoText.innerHTML = '<strong>Normal Student (>=75%):</strong> CS101 / student123<br><span class="text-danger fw-bold">Low Attendance (<75% RED Alert):</span> CS103 / student123';
+            }
+        }
+
+        // Initialize based on active tab
+        document.addEventListener('DOMContentLoaded', () => {
+            switchRole("{{ active_tab or 'admin' }}");
+        });
+    </script>
 </body>
 </html>

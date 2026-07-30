@@ -6,26 +6,37 @@
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold m-0 text-dark">Student Directory</h3>
-        <p class="text-muted m-0">View, search, edit, or delete enrolled students</p>
+        <p class="text-muted m-0">View, search, and manage students as per department</p>
     </div>
     <a href="{{ url_for('students.add_student') }}" class="btn btn-primary btn-rounded shadow-sm">
         <i class="bi bi-person-plus-fill me-1"></i> Add New Student
     </a>
 </div>
 
-<!-- Search & Filter Card -->
+<!-- Search & Department Filter Card -->
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
         <form action="{{ url_for('students.list_students') }}" method="GET" class="row g-2 align-items-center">
-            <div class="col-12 col-md-9">
+            <div class="col-12 col-md-5">
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="q" class="form-control border-start-0" placeholder="Search by Roll Number or Student Name..." value="{{ query }}">
+                    <input type="text" name="q" class="form-control border-start-0" placeholder="Search Roll Number or Name..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-building text-muted"></i></span>
+                    <select name="department" class="form-select border-start-0">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept }}" {% if selected_dept == dept %}selected{% endif %}>{{ dept }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div class="col-12 col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100 btn-rounded">Search</button>
-                {% if query %}
+                <button type="submit" class="btn btn-primary w-100 btn-rounded">Filter Students</button>
+                {% if query or selected_dept %}
                     <a href="{{ url_for('students.list_students') }}" class="btn btn-outline-secondary btn-rounded">Clear</a>
                 {% endif %}
             </div>
@@ -54,15 +65,15 @@
                         <tr>
                             <td><span class="badge bg-light text-dark border px-2 py-1">{{ student.roll_number }}</span></td>
                             <td class="fw-semibold text-dark">{{ student.name }}</td>
-                            <td>{{ student.department }}</td>
+                            <td><span class="badge bg-info-subtle text-info border border-info-subtle">{{ student.department }}</span></td>
                             <td><span class="badge bg-secondary-subtle text-secondary border px-2 py-1">{{ student.semester }}</span></td>
                             <td>
                                 {% if item.total > 0 %}
                                     <div class="d-flex align-items-center gap-2" style="min-width: 140px;">
                                         <div class="progress flex-grow-1" style="height: 6px;">
-                                            <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% elif item.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ item.percentage }}%"></div>
+                                            <div class="progress-bar {% if item.percentage >= 75 %}bg-success{% else %}bg-danger{% endif %}" role="progressbar" style="width: {{ item.percentage }}%"></div>
                                         </div>
-                                        <span class="fw-bold small {% if item.percentage >= 75 %}text-success{% elif item.percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                        <span class="fw-bold small {% if item.percentage >= 75 %}text-success{% else %}text-danger{% endif %}">
                                             {{ item.percentage }}%
                                         </span>
                                     </div>
@@ -115,5 +126,4 @@
         </table>
     </div>
 </div>
-
 {% endblock %}

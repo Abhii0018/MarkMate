@@ -1,0 +1,76 @@
+{% extends 'teacher/layout.html' %}
+
+{% block title %}Department Attendance Records - Teacher Portal{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold m-0 text-dark">Attendance Logs &bull; {{ department }}</h3>
+        <p class="text-muted m-0">Historical attendance logs for {{ department }} department</p>
+    </div>
+</div>
+
+<!-- Date Filter -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form action="{{ url_for('teacher_portal.records') }}" method="GET" class="row g-2 align-items-center">
+            <div class="col-12 col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-calendar-event text-muted"></i></span>
+                    <input type="date" name="date" class="form-control border-start-0" value="{{ filter_date }}">
+                </div>
+            </div>
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100 btn-rounded">Filter Logs</button>
+                {% if filter_date %}
+                    <a href="{{ url_for('teacher_portal.records') }}" class="btn btn-outline-secondary btn-rounded">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle m-0">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Roll Number</th>
+                    <th>Student Name</th>
+                    <th>Semester</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if records %}
+                    {% for r in records %}
+                        <tr>
+                            <td class="fw-medium text-secondary">{{ r.attendance_date.strftime('%Y-%m-%d') }}</td>
+                            <td><span class="badge bg-light text-dark border font-monospace">{{ r.student.roll_number }}</span></td>
+                            <td class="fw-semibold text-dark">{{ r.student.name }}</td>
+                            <td><span class="badge bg-secondary-subtle text-secondary border">{{ r.student.semester }}</span></td>
+                            <td>
+                                {% if r.status == 'Present' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Present
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Absent
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No attendance logs found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

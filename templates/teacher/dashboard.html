@@ -1,0 +1,147 @@
+{% extends 'teacher/layout.html' %}
+
+{% block title %}Teacher Dashboard - MarkMate{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h3 class="fw-bold m-0 text-dark" style="font-family: 'Outfit';">{{ department }} Department Dashboard</h3>
+        <p class="text-muted m-0">Welcome Prof. {{ session.get('name') }}! Manage attendance for your department students.</p>
+    </div>
+    <div>
+        <a href="{{ url_for('teacher_portal.mark_attendance') }}" class="btn btn-primary btn-rounded shadow-primary-glow">
+            <i class="bi bi-pencil-square me-1"></i> Mark Department Attendance
+        </a>
+    </div>
+</div>
+
+<!-- Department Stats Cards with Animated Counters -->
+<div class="row g-3 mb-4">
+    <!-- Total Students in Dept -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Dept Students</h6>
+                    <h2 class="fw-extrabold mb-0 text-dark counter-value" style="font-family: 'Outfit';">{{ total_students }}</h2>
+                </div>
+                <div class="icon-box bg-primary-subtle text-primary">
+                    <i class="bi bi-people-fill fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Present Today -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Present Today</h6>
+                    <h2 class="fw-extrabold mb-0 text-success counter-value" style="font-family: 'Outfit';">{{ present_today }}</h2>
+                </div>
+                <div class="icon-box bg-success-subtle text-success">
+                    <i class="bi bi-person-check-fill fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Absent Today -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Absent Today</h6>
+                    <h2 class="fw-extrabold mb-0 text-danger counter-value" style="font-family: 'Outfit';">{{ absent_today }}</h2>
+                </div>
+                <div class="icon-box bg-danger-subtle text-danger">
+                    <i class="bi bi-person-x-fill fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dept Attendance Rate -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Dept Attendance Rate</h6>
+                    <h2 class="fw-extrabold mb-0 text-primary counter-value" style="font-family: 'Outfit';">{{ attendance_rate }}%</h2>
+                </div>
+                <div class="icon-box bg-warning-subtle text-warning">
+                    <i class="bi bi-pie-chart-fill fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Department Students List & Quick Mark -->
+<div class="row g-4">
+    <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+                <h5 class="fw-bold m-0 text-dark" style="font-family: 'Outfit';"><i class="bi bi-person-lines-fill text-primary me-2"></i>Students in {{ department }}</h5>
+                <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill font-monospace">{{ total_students }} Enrolled</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle m-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Roll Number</th>
+                            <th>Student Name</th>
+                            <th>Semester</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if students %}
+                            {% for student in students %}
+                                <tr>
+                                    <td class="ps-4"><span class="badge bg-light text-dark border px-2.5 py-1 font-monospace">{{ student.roll_number }}</span></td>
+                                    <td class="fw-semibold text-dark">{{ student.name }}</td>
+                                    <td><span class="badge bg-secondary-subtle text-secondary border px-2.5 py-1 rounded-pill">{{ student.semester }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">No students registered in {{ department }} department.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-0 py-3 px-4">
+                <h5 class="fw-bold m-0 text-dark" style="font-family: 'Outfit';"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Department Activity</h5>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% if recent_attendance %}
+                        {% for r in recent_attendance %}
+                            <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4">
+                                <div>
+                                    <span class="fw-bold text-dark d-block">{{ r.student.name }}</span>
+                                    <small class="text-muted font-monospace">{{ r.student.roll_number }} &bull; {{ r.attendance_date.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                {% if r.status == 'Present' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-medium">Present</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-medium">Absent</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-center py-4 text-muted">No attendance logs available yet.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

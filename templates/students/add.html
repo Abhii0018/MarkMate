@@ -38,7 +38,7 @@
                         </select>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="semester" class="form-label fw-semibold">Semester <span class="text-danger">*</span></label>
                         <select class="form-select" id="semester" name="semester" required>
                             <option value="" disabled selected>Select Semester</option>
@@ -51,6 +51,12 @@
                             <option value="Semester 7">Semester 7</option>
                             <option value="Semester 8">Semester 8</option>
                         </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">Student Portal Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Default: student123">
+                        <small class="text-muted">Leave empty to use default password <code>student123</code>.</small>
                     </div>
 
                     <div class="d-flex gap-2">

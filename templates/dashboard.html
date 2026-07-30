@@ -1,32 +1,50 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - MarkMate{% endblock %}
+{% block title %}Admin Dashboard - MarkMate{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <div>
-        <h3 class="fw-bold m-0 text-dark">Dashboard Overview</h3>
-        <p class="text-muted m-0">Daily attendance summary and metrics</p>
+        <h3 class="fw-bold m-0 text-dark" style="font-family: 'Outfit';">System Overview & Analytics</h3>
+        <p class="text-muted m-0">Departmental breakdown, faculty teachers, and real-time student attendance</p>
     </div>
-    <div>
-        <a href="{{ url_for('attendance.mark_attendance') }}" class="btn btn-primary btn-rounded shadow-sm">
-            <i class="bi bi-pencil-square me-1"></i> Mark Today's Attendance
+    <div class="d-flex gap-2">
+        <a href="{{ url_for('teachers.add_teacher') }}" class="btn btn-outline-primary btn-rounded shadow-sm">
+            <i class="bi bi-person-plus-fill me-1"></i> Add Teacher
+        </a>
+        <a href="{{ url_for('students.add_student') }}" class="btn btn-primary btn-rounded shadow-primary-glow">
+            <i class="bi bi-person-badge-fill me-1"></i> Add Student
         </a>
     </div>
 </div>
 
-<!-- Dashboard Metric Cards -->
+<!-- Key Metric Cards with Counters -->
 <div class="row g-3 mb-4">
-    <!-- Total Students -->
+    <!-- Total Faculty Teachers -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card stat-card p-3 bg-white">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Total Students</h6>
-                    <h2 class="fw-bold mb-0 text-dark">{{ total_students }}</h2>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Total Teachers</h6>
+                    <h2 class="fw-extrabold mb-0 text-indigo counter-value" style="color: #6366f1; font-family: 'Outfit';">{{ total_teachers }}</h2>
                 </div>
-                <div class="icon-box bg-primary-subtle text-primary">
-                    <i class="bi bi-people-fill"></i>
+                <div class="icon-box text-indigo" style="background-color: #e0e7ff; color: #4338ca;">
+                    <i class="bi bi-person-badge-fill fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Students -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Total Students</h6>
+                    <h2 class="fw-extrabold mb-0 text-dark counter-value" style="font-family: 'Outfit';">{{ total_students }}</h2>
+                </div>
+                <div class="icon-box bg-info-subtle text-info">
+                    <i class="bi bi-people-fill fs-3"></i>
                 </div>
             </div>
         </div>
@@ -34,62 +52,103 @@
 
     <!-- Present Today -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card stat-card p-3 bg-white">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Present Today</h6>
-                    <h2 class="fw-bold mb-0 text-success">{{ present_today }}</h2>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Present Today</h6>
+                    <h2 class="fw-extrabold mb-0 text-success counter-value" style="font-family: 'Outfit';">{{ present_today }}</h2>
                 </div>
                 <div class="icon-box bg-success-subtle text-success">
-                    <i class="bi bi-person-check-fill"></i>
+                    <i class="bi bi-person-check-fill fs-3"></i>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Today Attendance Rate % -->
+    <!-- Attendance Rate % -->
     <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card stat-card p-3 bg-white">
+        <div class="card stat-card p-3 bg-white border-0 shadow-sm rounded-4">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Attendance Rate</h6>
-                    <h2 class="fw-bold mb-0 text-primary">{{ attendance_rate }}%</h2>
-                </div>
-                <div class="icon-box bg-info-subtle text-info">
-                    <i class="bi bi-pie-chart-fill"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Today's Date -->
-    <div class="col-12 col-sm-6 col-xl-3">
-        <div class="card stat-card p-3 bg-white">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.75rem;">Today's Date</h6>
-                    <h5 class="fw-bold mb-0 text-secondary" style="font-size: 1rem;">{{ today_date }}</h5>
+                    <h6 class="text-muted text-uppercase fw-bold mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Attendance Rate</h6>
+                    <h2 class="fw-extrabold mb-0 text-primary counter-value" style="font-family: 'Outfit';">{{ attendance_rate }}%</h2>
                 </div>
                 <div class="icon-box bg-warning-subtle text-warning">
-                    <i class="bi bi-calendar-event-fill"></i>
+                    <i class="bi bi-pie-chart-fill fs-3"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Department Overview Cards (Teachers & Students per Department) -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h5 class="fw-bold text-dark m-0" style="font-family: 'Outfit';"><i class="bi bi-building me-2 text-primary"></i>Department Breakdown & Faculty</h5>
+    <span class="badge bg-light text-secondary border px-3 py-1 rounded-pill">Civil &bull; Mechanical &bull; Computer Science</span>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for dept in dept_summary %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-3.5 bg-white stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle p-2 d-flex align-items-center justify-content-center bg-primary-subtle text-primary" style="width: 34px; height: 34px;">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark m-0">{{ dept.name }}</h6>
+                    </div>
+                    <a href="{{ url_for('students.list_students', department=dept.name) }}" class="badge bg-primary-subtle text-primary border text-decoration-none px-2.5 py-1 rounded-pill">
+                        Students <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="p-2.5 bg-light rounded-3 text-center border">
+                            <span class="d-block small text-muted font-monospace" style="font-size: 0.68rem;">FACULTY TEACHERS</span>
+                            <span class="fw-bold fs-5 text-indigo counter-value" style="color: #6366f1;">{{ dept.teachers_count }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2.5 bg-light rounded-3 text-center border">
+                            <span class="d-block small text-muted font-monospace" style="font-size: 0.68rem;">ENROLLED STUDENTS</span>
+                            <span class="fw-bold fs-5 text-dark counter-value">{{ dept.students_count }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="small fw-semibold text-secondary d-block mb-1"><i class="bi bi-person-badge text-muted me-1"></i> Assigned Faculty:</span>
+                    {% if dept.teachers %}
+                        <ul class="list-unstyled mb-0 small">
+                            {% for t in dept.teachers %}
+                                <li class="py-1.5 border-bottom d-flex align-items-center justify-content-between">
+                                    <span class="fw-medium text-dark"><i class="bi bi-record-circle text-primary me-1"></i> {{ t.name }}</span>
+                                    <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.7rem;">{{ t.username }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <span class="small text-muted italic">No faculty assigned yet.</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 
 <!-- Recent Attendance Table -->
-<div class="card border-0 shadow-sm rounded-3">
-    <div class="card-header bg-white border-0 py-3 d-flex align-items-center justify-content-between">
-        <h5 class="fw-bold m-0 text-dark"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Attendance (Last 5 Records)</h5>
-        <a href="{{ url_for('attendance.attendance_records') }}" class="btn btn-sm btn-outline-primary rounded-pill">View All Records</a>
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white border-0 py-3 px-4 d-flex align-items-center justify-content-between">
+        <h5 class="fw-bold m-0 text-dark" style="font-family: 'Outfit';"><i class="bi bi-clock-history me-2 text-primary"></i>Recent Attendance Activity</h5>
+        <a href="{{ url_for('attendance.attendance_records') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View All Logs</a>
     </div>
     <div class="table-responsive">
         <table class="table table-hover table-custom align-middle m-0">
             <thead>
                 <tr>
-                    <th>Date</th>
+                    <th class="ps-4">Date</th>
                     <th>Roll Number</th>
                     <th>Student Name</th>
                     <th>Department</th>
@@ -100,17 +159,17 @@
                 {% if recent_attendance %}
                     {% for record in recent_attendance %}
                         <tr>
-                            <td class="fw-medium text-secondary">{{ record.attendance_date.strftime('%Y-%m-%d') }}</td>
-                            <td><span class="badge bg-light text-dark border">{{ record.student.roll_number }}</span></td>
-                            <td class="fw-semibold">{{ record.student.name }}</td>
-                            <td>{{ record.student.department }}</td>
+                            <td class="ps-4 fw-medium text-secondary">{{ record.attendance_date.strftime('%Y-%m-%d') }}</td>
+                            <td><span class="badge bg-light text-dark border font-monospace px-2 py-1">{{ record.student.roll_number }}</span></td>
+                            <td class="fw-semibold text-dark">{{ record.student.name }}</td>
+                            <td><span class="badge bg-info-subtle text-info border border-info-subtle px-2.5 py-1 rounded-pill">{{ record.student.department }}</span></td>
                             <td>
                                 {% if record.status == 'Present' %}
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-medium">
                                         <i class="bi bi-check-circle-fill me-1"></i> Present
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-medium">
                                         <i class="bi bi-x-circle-fill me-1"></i> Absent
                                     </span>
                                 {% endif %}
